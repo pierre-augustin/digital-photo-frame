@@ -93,28 +93,41 @@ chmod +x /home/pat/screen-sleep.sh
 sudo crontab -e
 ```
 
-### Ajuster les heures de veille
+### Crontab réellement déployée (vérifiée sur le Pi)
 
-Éditer les deux lignes cron dans `config/crontab-entry.txt` (ou
-directement via `crontab -e`) :
-
-```cron
+```
+$ crontab -l
 0 23 * * * /home/pat/screen-sleep.sh off
-0 7  * * * /home/pat/screen-sleep.sh on
+0 7 * * * /home/pat/screen-sleep.sh on
+0 * * * * pkill -USR1 feh
 ```
 
-Le premier champ/deuxième champ est `minute heure` — remplacer `23` et
-`7` par les heures souhaitées (0-23). Pas besoin de redémarrer le
-service slideshow : `feh` continue de tourner en arrière-plan pendant
-la veille, seul l'écran physique s'éteint, et le diaporama réapparaît
-immédiatement au réveil de l'écran.
+### Ajuster les heures de veille
+
+Éditer les deux lignes `screen-sleep.sh` ci-dessus, directement via
+`crontab -e` sur le Pi, ou à distance :
+
+```bash
+ssh pat@<IP_DU_PI> 'crontab -l 2>/dev/null | grep -v screen-sleep.sh | { cat; echo "0 23 * * * /home/pat/screen-sleep.sh off"; echo "0 7 * * * /home/pat/screen-sleep.sh on"; } | crontab -'
+```
+
+Remplacer `23` et `7` par les heures souhaitées (0-23) — le format est
+`minute heure * * *`. Pas besoin de redémarrer le service slideshow :
+`feh` continue de tourner en arrière-plan pendant la veille, seul
+l'écran physique s'éteint, et le diaporama réapparaît immédiatement au
+réveil de l'écran.
 
 ### Test manuel
 
 ```bash
-DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/1000 /home/pat/screen-sleep.sh off
-DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/1000 /home/pat/screen-sleep.sh on
+/home/pat/screen-sleep.sh off
+/home/pat/screen-sleep.sh on
 ```
+
+Le script fixe lui-même `XDG_RUNTIME_DIR=/run/user/1000` et
+`WAYLAND_DISPLAY=wayland-0` par défaut (nécessaire car cron ne les
+fournit pas) — inutile de les passer en variables d'environnement,
+confirmé fonctionnel sur le Pi de prod.
 
 ## Paramètres ajustables
 
