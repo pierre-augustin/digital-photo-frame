@@ -1,0 +1,3 @@
+# Montage NFS du partage photo Synology DS220+
+# Adapter l'IP du NAS avant utilisation
+192.168.0.XXX:/volume1/photo /mnt/nas-photos nfs defaults,ro,nfsvers=3,x-systemd.automount,noauto,_netdev 0 0

@@ -1,0 +1,7 @@
+# Recharge la liste de photos feh toutes les heures sans interrompre le diaporama
+0 * * * * pkill -USR1 feh
+
+# Veille nocturne de l'écran (adapter les heures : minute heure * * *)
+# Éteint l'écran à 23h, le rallume à 7h — feh continue de tourner en fond
+0 23 * * * /home/pat/screen-sleep.sh off
+0 7  * * * /home/pat/screen-sleep.sh on

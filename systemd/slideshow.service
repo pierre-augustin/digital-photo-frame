@@ -1,0 +1,15 @@
+[Unit]
+Description=Photo Slideshow
+After=graphical.target
+
+[Service]
+Type=simple
+User=pat
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStart=/home/pat/start-slideshow.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=graphical.target
